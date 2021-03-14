@@ -89,6 +89,11 @@ namespace LibraryFive
             List<Customer> customerList = GetCustomerList();
             return customerList.Find(customer => customer.CPF.Equals(cpf));
         }
+        static public Customer GetCustomer(long idCustomer)
+        {
+            List<Customer> customerList = GetCustomerList();
+            return customerList.Find(customer => customer.IdCustomer.Equals(idCustomer));
+        }
         static public void CreateCustomer(Customer newCustomer)
         {
             List<Customer> customerList = GetCustomerList();
