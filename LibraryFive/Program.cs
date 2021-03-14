@@ -9,8 +9,10 @@ namespace LibraryFive
 {
     class Program
     {
+
         static void Main(string[] args)
         {
+
             while (true)
             {
                 Console.Clear();
@@ -33,16 +35,16 @@ namespace LibraryFive
                             CreateCustomerHandler();
                             break;
                         case 2:
-                           // CreateBookHandler();
+                            CreateBookHandler();
                             break;
                         case 3:
-                        //    CreateLoanHandler();
+                            CreateLoanHandler();
                             break;
                         case 4:
-                        //CreateDevolutionHandler();
+                            CreateDevolutionHandler();
                             break;
                         case 5:
-                        //    ReportHandler();
+                            //    ReportHandler();
                             break;
                     }
                 }
@@ -102,7 +104,93 @@ namespace LibraryFive
                     ZipCode = zipCode
                 }
             });
+        }
+        static void CreateBookHandler()
+        {
+            Console.Clear();
+            Console.Write("Informe o ISBN do livro: ");
+            string isbn = Console.ReadLine();
 
+            if (Book.CheckISBN(isbn))
+            {
+                Console.WriteLine("Livro já cadastrado");
+                Console.WriteLine("\nPressione qualquer tecla para retornar ao menu principal.");
+                Console.ReadKey();
+                return;
+            }
+
+            Console.Write("Informe o titulo do livro: ");
+            string title = Console.ReadLine();
+
+            Console.Write("Informe o genero do livro: ");
+            string genre = Console.ReadLine();
+
+            Console.Write("Informe a data de publicação do livro: ");
+            string publishDate = Console.ReadLine();
+
+            Console.Write("Informe o autor do livro: ");
+            string author = Console.ReadLine();
+
+            Book.CreateBook(new Book
+            {
+                ISBN = isbn,
+                Title = title,
+                Genre = genre,
+                PublishDate = DateTime.ParseExact(publishDate, "d", new CultureInfo(name: "pt-BR")),
+                Author = author
+            });
+        }
+
+        static void CreateLoanHandler()
+        {
+            Console.Clear();
+            Console.Write("Informe o Numero do Tombo do livro: ");
+            long tumbleNumber = long.Parse(Console.ReadLine());
+            Book book = Book.GetBook(tumbleNumber);
+            if (book is null)
+            {
+                Console.WriteLine("Livro indisponível para empréstimo");
+                Console.WriteLine("\nPressione qualquer tecla para retornar ao menu principal.");
+                Console.ReadKey();
+                CreateLoanHandler();
+            }
+
+            Console.Write("Informe o CPF do cliente: ");
+            string cpf = Console.ReadLine();
+            Customer customer = Customer.GetCustomer(cpf);
+            if (customer is null)
+            {
+                Console.WriteLine("Cliente não cadastrado");
+                Console.WriteLine("\nPressione qualquer tecla para retornar ao menu principal.");
+                Console.ReadKey();
+                CreateLoanHandler();
+            }
+
+            Console.Write("Informe a data de devolução: ");
+            string returnDate = Console.ReadLine();
+
+            Loan.CreateLoan(new Loan
+            {
+                IdCustomer = customer.IdCustomer,
+                TumbleNumber = book.TumbleNumber,
+                ReturnDate = DateTime.ParseExact(returnDate, "d", new CultureInfo(name: "pt-BR"))
+            });
+        }
+        static void CreateDevolutionHandler()
+        {
+            Console.Clear();
+            Console.Write("Informe o Numero do Tombo do livro: ");
+            long tumbleNumber = long.Parse(Console.ReadLine());
+            Loan loan = Loan.GetLoan(tumbleNumber);
+            if (loan is null)
+            {
+                Console.WriteLine("Livro indisponível para empréstimo");
+                Console.WriteLine("\nPressione qualquer tecla para retornar ao menu principal.");
+                Console.ReadKey();
+                CreateDevolutionHandler();
+            }
+
+            Loan.UpdateLoan(loan);
         }
     }
 }
